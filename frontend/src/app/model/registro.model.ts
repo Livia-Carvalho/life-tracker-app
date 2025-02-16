@@ -1,9 +1,11 @@
+import { TNota } from "./nota.model";
+
 export type TRegistro = {
-  id: number;
+  id?: number;
   reg_date: string;
   humor: number;
   alerta_vermelho: boolean;
   analise?: string;
-  nota_id: number;
-  usuario_id: number;
+  nota: TNota;
+  usuario: { id: number };
 }

@@ -1,0 +1,16 @@
+<div class="container">
+    <h1>Registros</h1>
+  
+    <div class="grid">
+      <div *ngFor="let registro of registros" class="col-12 md:col-6 lg:col-4">
+        <div class="card p-3 cursor-pointer" (click)="verRegistro(registro.id!)">
+          <div class="flex align-items-center justify-content-between">
+            <div class="flex align-items-center">
+              <i [class]="getHumorIcon(registro.humor)" style="font-size: 2rem;"></i>
+              <span class="ml-3 text-lg">{{ registro.reg_date | date: 'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

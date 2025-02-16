@@ -1,0 +1,55 @@
+<div class="container">
+    <!-- Emoji no topo -->
+    <div [ngSwitch]="registro.humor" class="flex flex-column align-items-center" style="margin: 15px">
+      <div *ngSwitchCase="1">
+        <i class="fa-solid fa-face-laugh text-teal-600" style="font-size: 8rem;"></i>
+      </div>
+      <div *ngSwitchCase="2">
+        <i class="fa-solid fa-face-smile text-green-500" style="font-size: 8rem;"></i>
+      </div>
+      <div *ngSwitchCase="3">
+        <i class="fa-solid fa-face-meh text-yellow-500" style="font-size: 8rem;"></i>
+      </div>
+      <div *ngSwitchCase="4">
+        <i class="fa-solid fa-face-frown text-orange-500" style="font-size: 8rem;"></i>
+      </div>
+      <div *ngSwitchCase="5">
+        <i class="fa-solid fa-face-sad-tear text-red-500" style="font-size: 8rem;"></i>
+      </div>
+      <div *ngSwitchDefault>Default</div>
+    </div>
+  
+    <!-- <div class="text-900 font-medium text-xl text-center">O que você fez nesse dia?</div> -->
+  
+    <div *ngFor="let categoria of categorias" class="categoria-container">
+      <div class="text-lg font-bold text-900">{{ categoria.nome }}</div>
+  
+      <div class="flex flex-wrap gap-3 mt-2">
+        <div
+          *ngFor="let atividade of atividadesPorCategoria[categoria.id]"
+          class="atividade-card"
+          [class.atividade-selecionada]="isAtividadeSelecionada(atividade.id)"
+        >
+          <img [src]="getIconPath(atividade.url)" class="icon" alt="Ícone da atividade" />
+          <div class="atividade-nome">{{ atividade.nome }}</div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Campo de anotação -->
+    <div class="mt-4">
+      <label for="anotacao" class="block text-900 font-medium mb-2">Anotação:</label>
+      <textarea
+        id="anotacao"
+        [(ngModel)]="nota.texto"
+        class="w-full p-2 border-round"
+        rows="4"
+        placeholder="Escreva suas anotações aqui..."
+      ></textarea>
+    </div>
+  
+    <!-- Botão para salvar a anotação -->
+    <div class="flex justify-content-end mt-4">
+      <button (click)="salvarNota()" class="p-button p-button-success">Salvar Anotação</button>
+    </div>
+  </div>

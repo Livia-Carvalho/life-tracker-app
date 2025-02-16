@@ -1,4 +1,4 @@
 export type TNota = {
-    id: number;
+    id?: number;
     texto: string;
   };
