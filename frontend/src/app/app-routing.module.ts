@@ -13,8 +13,9 @@ import { AppLayoutComponent } from "./layout/app.layout.component";
                 children: [
                     { path: '', loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule) },
                     { path: 'criar-registro/:humor', loadChildren: () => import('./pages/criar-registro/criar-registro.module').then(m => m.CriarRegistroModule) },
-                    { path: 'palestras', loadChildren: () => import('./pages/palestras/palestra.module').then(m => m.PalestraModule) },
-                    { path: 'alunos', loadChildren: () => import('./pages/alunos/aluno.module').then(m => m.AlunoModule) },
+                    { path: 'registros', loadChildren: () => import('./pages/registros/registros.module').then(m => m.RegistrosModule) },
+                    { path: 'ver-registro/:id', loadChildren: () => import('./pages/ver-registro/ver-registro.module').then(m => m.VerRegistroModule) },
+                    { path: 'atividades', loadChildren: () => import('./pages/atividades/atividades.module').then(m => m.AtividadesModule) },
                     { path: 'calendar', loadChildren: () => import('./pages/calendar/calendar.module').then(m => m.CalendarModule) },
                     { path: 'perfil', loadChildren: () => import('./pages/perfil/perfil.module').then(m => m.PerfilModule) },
                 ]

@@ -2,8 +2,14 @@ import {Component, OnInit} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TAtividade } from 'src/app/model/atividade.model';
 import { TCategoria } from 'src/app/model/categoria.model';
+import { TNota } from 'src/app/model/nota.model';
+import { TRegistro } from 'src/app/model/registro.model';
+import { TRegistroAtividade } from 'src/app/model/registroAtividade.model';
 import { AtividadeService } from 'src/app/service/atividade.service';
 import { CategoriaService } from 'src/app/service/categoria.service';
+import { NotaService } from 'src/app/service/nota.service';
+import { RegistroService } from 'src/app/service/registro.service';
+import { RegistroAtividadeService } from 'src/app/service/registroAtividade.service';
 
 @Component({
     selector: 'app-criar-registro',
@@ -16,12 +22,16 @@ export class CriarRegistroComponent implements OnInit {
     categorias: TCategoria[] = [];
     atividadesPorCategoria: { [key: number]: TAtividade[] } = {};
     atividadesSelecionadas: Set<number> = new Set();
-    iconPath = '../shared/icons/';
+    anotacao: string = '';
+    iconPath = '/assets/icons/';
 
     constructor(
         private route: ActivatedRoute,
         private categoriaService: CategoriaService,
-        private atividadeService: AtividadeService
+        private atividadeService: AtividadeService,
+        private notaService: NotaService,
+        private registroService: RegistroService,
+        private registroAtividadeService: RegistroAtividadeService
     ) { }
 
     ngOnInit() {
@@ -33,24 +43,26 @@ export class CriarRegistroComponent implements OnInit {
     }
 
     carregarCategoriasEAtividades() {
-        this.categoriaService.getAll().subscribe(categorias => {
-            console.log('Categorias carregadas:', categorias);
-          this.categorias = categorias;
-          this.atividadesPorCategoria = {};
-          
-          categorias.forEach(categoria => {
-            this.atividadesPorCategoria[categoria.id] = [];
-          });
+      this.categoriaService.getAll().subscribe(categorias => {
+        console.log('Categorias carregadas:', categorias);
+        this.categorias = categorias;
+        this.atividadesPorCategoria = {};
     
-          this.atividadeService.getAll().subscribe(atividades => {
-            atividades.forEach(atividade => {
-              if (atividade.categoria_id && this.atividadesPorCategoria[atividade.categoria_id]) {
-                this.atividadesPorCategoria[atividade.categoria_id].push(atividade);
-              }
-            });
-          });
+        categorias.forEach(categoria => {
+          this.atividadesPorCategoria[categoria.id] = [];
         });
-      }
+    
+        this.atividadeService.getAll().subscribe(atividades => {
+          atividades.forEach(atividade => {
+            if (atividade.categoria_id && this.atividadesPorCategoria[atividade.categoria_id]) {
+              this.atividadesPorCategoria[atividade.categoria_id].push(atividade);
+            }
+          });
+          console.log('Atividades carregadas por categoria:', this.atividadesPorCategoria);
+        });
+      });
+    }
+    
 
       getIconPath(iconName: string | null): string {
         return iconName ? `${this.iconPath}${iconName}.svg` : `${this.iconPath}default.svg`;
@@ -66,5 +78,70 @@ export class CriarRegistroComponent implements OnInit {
     
       isAtividadeSelecionada(atividadeId: number): boolean {
         return this.atividadesSelecionadas.has(atividadeId);
+      }
+
+      salvarRegistro() {
+        const novaNota: TNota = {
+          texto: this.anotacao,
+        };
+      
+        this.notaService.create(novaNota).subscribe((notaSalva) => {
+          console.log('Nota salva:', notaSalva);
+      
+          const novoRegistro: TRegistro = {
+            reg_date: new Date().toISOString(),
+            humor: this.humor,
+            alerta_vermelho: false,
+            analise: '',
+            nota: notaSalva,
+            usuario: { id: 1 },
+          };
+      
+          this.registroService.create(novoRegistro).subscribe((registroSalvo) => {
+            console.log('Registro salvo:', registroSalvo);
+      
+            if (!registroSalvo.id) {
+              throw new Error('ID do registro não foi definido pelo backend.');
+            }
+      
+            // Agora, criar a associação entre o registro e as atividades
+            this.atividadesSelecionadas.forEach((atividadeId) => {
+              // Encontrar a atividade pelo ID
+              const atividadeSelecionada = this.encontrarAtividadePorId(atividadeId);
+      
+              if (atividadeSelecionada) {
+                const registroAtividade: TRegistroAtividade = {
+                  registro: registroSalvo, // Passa o objeto registro completo
+                  atividade: atividadeSelecionada, // Passa o objeto atividade completo
+                };
+      
+                // Chama o serviço para criar o registroAtividade
+                this.registroAtividadeService.create(registroAtividade).subscribe(
+                  () => {
+                    console.log('Atividade associada ao registro:', atividadeId);
+                  },
+                  (error) => {
+                    console.error('Erro ao associar atividade:', error);
+                  }
+                );
+              } else {
+                console.error('Atividade não encontrada:', atividadeId);
+              }
+            });
+      
+            alert('Registro salvo com sucesso!');
+          });
+        });
+      }
+      
+
+      encontrarAtividadePorId(atividadeId: number): TAtividade | undefined {
+        for (const categoriaId in this.atividadesPorCategoria) {
+          const atividade = this.atividadesPorCategoria[categoriaId].find(a => a.id === atividadeId);
+          if (atividade) {
+            return atividade;
+          }
+        }
+        return undefined;
       }
 }

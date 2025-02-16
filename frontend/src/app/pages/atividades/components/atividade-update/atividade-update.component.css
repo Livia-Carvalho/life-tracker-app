@@ -1,0 +1,27 @@
+.icon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    gap: 10px;
+  }
+  
+  .icon-item {
+    cursor: pointer;
+    padding: 5px;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    text-align: center;
+  }
+  
+  .icon-item:hover {
+    border-color: #007bff;
+  }
+  
+  .icon-item.selected {
+    border-color: #007bff;
+    background-color: rgba(0, 123, 255, 0.1);
+  }
+  
+  .icon {
+    width: 30px;
+    height: 30px;
+  }

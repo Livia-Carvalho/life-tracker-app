@@ -9,6 +9,9 @@ import { LoginModule } from "./pages/login/login.module";
 import {AuthService} from "./service/auth.service";
 import {HTTP_INTERCEPTORS} from "@angular/common/http";
 import {TokenInterceptor} from "./auth/token.interceptor";
+import { DialogModule } from 'primeng/dialog';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AtividadesModule } from '../pages/atividades/atividades.module';
 
 @NgModule({
     declarations: [
@@ -19,7 +22,11 @@ import {TokenInterceptor} from "./auth/token.interceptor";
         AppRoutingModule,
         AppLayoutModule,
         FullCalendarModule,
-        LoginModule
+        LoginModule,
+        DialogModule,
+        FormsModule,
+        ReactiveFormsModule,
+        AtividadesModule
     ],
     providers: [
         { provide: LocationStrategy, useClass: PathLocationStrategy },

@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common"
 import { NotaService } from "../services/notas.service";
 import { Nota } from "../domain/nota.entity";
 
-@Controller('/notas')
+@Controller('/api/notas')
 export class NotaController {
     constructor(private readonly notaService: NotaService) {}
 

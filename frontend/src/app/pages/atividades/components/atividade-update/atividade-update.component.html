@@ -1,0 +1,19 @@
+<p-dialog [(visible)]="updateDialog" [style]="{width: '450px'}" header="Detalhes da Atividade" [modal]="true" class="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="field">
+            <label for="nome">Nome</label>
+            <input type="text" pInputText id="nome" [(ngModel)]="atividade.nome" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !atividade.nome}"/>
+            <small class="ng-dirty ng-invalid" *ngIf="submitted && !atividade.nome">Nome é obrigatório.</small>
+        </div>
+
+        <div class="field">
+            <label for="url">Ícone (URL)</label>
+            <input type="text" pInputText id="url" [(ngModel)]="atividade.url"/>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="onClose()"></button>
+        <button pButton pRipple label="Salvar" icon="pi pi-check" class="p-button-text" (click)="onSave()"></button>
+    </ng-template>
+</p-dialog>

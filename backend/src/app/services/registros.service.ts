@@ -24,7 +24,7 @@ export class RegistroService {
     async update(id: number, registro: Registro): Promise<Registro> {
         const existingRegistro = await this.repository.findOneBy({ id })
         existingRegistro.alerta_vermelho = registro.alerta_vermelho
-        existingRegistro.date = registro.date
+        existingRegistro.reg_date = registro.reg_date
         existingRegistro.humor = registro.humor
         existingRegistro.analise = registro.analise
         return this.repository.save(existingRegistro)

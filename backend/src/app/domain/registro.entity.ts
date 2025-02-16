@@ -10,7 +10,7 @@ export class Registro {
     id: number;
 
     @Column({ name: 'reg_date', type: 'datetime' })
-    date: Date;
+    reg_date: Date;
 
     @Column()
     humor: number;

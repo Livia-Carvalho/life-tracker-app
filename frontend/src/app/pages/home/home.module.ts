@@ -10,7 +10,6 @@ import { StyleClassModule } from 'primeng/styleclass';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { CalendarModule } from 'primeng/calendar';
 import { HomeRoutingModule } from './home-routing.module';
-
 @NgModule({
     imports: [
         CommonModule,
