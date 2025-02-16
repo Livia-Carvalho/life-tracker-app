@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common"
 import { MidiaService } from "../services/midias.service";
 import { Midia } from "../domain/midia.entity";
 
-@Controller('/midias')
+@Controller('/api/midias')
 export class MidiaController {
     constructor(private readonly midiaService: MidiaService) {}
 

@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common"
 import { RegistroService } from "../services/registros.service";
 import { Registro } from "../domain/registro.entity";
 
-@Controller('/registros')
+@Controller('/api/registros')
 export class RegistroController {
     constructor(private readonly registroService: RegistroService) {}
 

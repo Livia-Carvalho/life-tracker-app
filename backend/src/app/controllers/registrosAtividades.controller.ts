@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
 import { RegistroAtividadeService } from "../services/registrosAtividades.service";
 import { RegistroAtividade } from "../domain/registroAtividade.entity";
 
-@Controller('/registro-atividades')
+@Controller('/api/registro-atividades')
 export class RegistroAtividadeController {
     constructor(private readonly registroAtividadeService: RegistroAtividadeService) {}
 

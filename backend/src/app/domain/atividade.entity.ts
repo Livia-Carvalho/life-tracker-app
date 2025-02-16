@@ -16,9 +16,7 @@ export class Atividade {
     @Column()
     url: string
 
-    @ManyToOne(() => Categoria, (categoria: Categoria) => categoria.atividades, {
-        eager: true,
-    })
+    @ManyToOne(() => Categoria, (categoria: Categoria) => categoria.atividades)
     @JoinColumn()
     categoria: Categoria
 

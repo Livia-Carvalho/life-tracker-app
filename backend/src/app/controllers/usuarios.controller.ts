@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common"
 import { UsuarioService } from "../services/usuarios.service"; // Serviço para manipular usuários
 import { Usuario } from "../domain/usuario.entity";  // Entidade Usuario
 
-@Controller('/usuarios')
+@Controller('/api/usuarios')
 export class UsuarioController {
     constructor(private readonly usuarioService: UsuarioService) {}
 

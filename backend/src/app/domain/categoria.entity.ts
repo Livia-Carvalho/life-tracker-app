@@ -10,6 +10,6 @@ export class Categoria {
     @Column()
     nome: string
 
-    @OneToMany(() => Atividade, (atividade) => atividade.categoria)
+    @OneToMany(() => Atividade, (atividade) => atividade.categoria, { eager: true })
     atividades: Atividade[];
 }
