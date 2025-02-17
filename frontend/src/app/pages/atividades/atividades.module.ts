@@ -11,6 +11,9 @@ import { PanelMenuModule } from 'primeng/panelmenu';
 import { AtividadesRoutingModule } from './atividades-routing.module';
 import { AtividadeUpdateComponent } from './components/atividade-update/atividade-update.component';
 import { DialogModule } from 'primeng/dialog';
+import { DropdownModule } from 'primeng/dropdown';
+import { ToastModule } from 'primeng/toast';
+import { ToolbarModule } from 'primeng/toolbar';
 
 @NgModule({
     declarations: [
@@ -28,6 +31,9 @@ import { DialogModule } from 'primeng/dialog';
         ButtonModule,
         AtividadesRoutingModule,
         DialogModule,
+        DropdownModule,
+        ToastModule,
+        ToolbarModule,
     ],
 })
 export class AtividadesModule { }

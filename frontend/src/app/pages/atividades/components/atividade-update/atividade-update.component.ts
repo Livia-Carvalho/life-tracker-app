@@ -1,56 +1,75 @@
 import { Component } from '@angular/core';
-import { TAtividade } from '../../../../model/atividade.model';
-import { AtividadeService } from '../../../../service/atividade.service';
-import { MessageService } from 'primeng/api';
-import { Observable, Subject } from 'rxjs';
+import { TAtividade } from "../../../../model/atividade.model";
+import { TCategoria } from "../../../../model/categoria.model";
+import { AtividadeService } from "../../../../service/atividade.service";
+import { CategoriaService } from "../../../../service/categoria.service";
+import { MessageService } from "primeng/api";
+import { Observable, Subject } from "rxjs";
+import { HttpClient } from '@angular/common/http';
 
 @Component({
-  selector: 'app-atividade-update',
+  selector: 'app-atividade-update-dialog',
   templateUrl: './atividade-update.component.html',
 })
 export class AtividadeUpdateComponent {
 
   atividade: TAtividade = <TAtividade>{};
-
+  categorias: TCategoria[] = [];
+  icons: string[] = [];
   updateDialog: boolean = false;
   submitted: boolean = false;
-  categoriaId!: number;
 
   private closeSubject: Subject<void> = new Subject<void>();
 
   constructor(
-      private atividadeService: AtividadeService,
-      private messageService: MessageService
+    private atividadeService: AtividadeService,
+    private categoriaService: CategoriaService,
+    private messageService: MessageService,
+    private http: HttpClient
   ) { }
 
-  open(categoriaId: number, atividadeId?: number | null): Observable<void> {
-    this.categoriaId = categoriaId;
-    if (atividadeId) {
-      this.atividadeService.get(atividadeId).subscribe((_atividade: TAtividade): void => {
+  open(id?: number | null): Observable<void> {
+    this.categoriaService.getAll().subscribe((categorias: TCategoria[]) => {
+      this.categorias = categorias;
+    });
+
+    this.loadIcons();
+
+    if (id) {
+      this.atividadeService.get(id).subscribe((_atividade: TAtividade): void => {
         this.atividade = _atividade;
       });
     } else {
-      this.atividade = { categoria_id: categoriaId } as TAtividade;
+      this.atividade = <TAtividade>{};
     }
     this.updateDialog = true;
     return this.closeSubject.asObservable();
   }
 
+  loadIcons(): void {
+    this.http.get<string[]>('/assets/icons/icons.json').subscribe((icons) => {
+      this.icons = icons;
+    });
+  }
+
+  selectIcon(icon: string): void {
+    this.atividade.url = icon;
+  }
+
+  getIconPath(iconName: string | null): string {
+    return iconName ? `/assets/icons/${iconName}.svg` : '/assets/icons/default.svg';
+  }
+
   onSave(): void {
     this.submitted = true;
 
-    if (!this.atividade.nome) {
-      this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Nome é obrigatório', life: 3000 });
-      return;
-    }
-
     if (this.atividade.id) {
-      this.atividadeService.update(this.atividade).subscribe(() => {
+      this.atividadeService.update(this.atividade as TAtividade).subscribe(() => {
         this.onClose();
         this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Atividade Atualizada', life: 3000 });
       });
     } else {
-      this.atividadeService.create({ ...this.atividade, categoria_id: this.categoriaId }).subscribe(() => {
+      this.atividadeService.create(this.atividade as TAtividade).subscribe(() => {
         this.onClose();
         this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Atividade Criada', life: 3000 });
       });

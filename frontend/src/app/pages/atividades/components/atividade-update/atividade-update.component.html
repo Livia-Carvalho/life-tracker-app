@@ -1,15 +1,31 @@
-<p-dialog [(visible)]="updateDialog" [style]="{width: '450px'}" header="Detalhes da Atividade" [modal]="true" class="p-fluid">
+<p-dialog [(visible)]="updateDialog" [style]="{width: '600px'}" header="Detalhes da Atividade" [modal]="true" class="p-fluid">
     <ng-template pTemplate="content">
         <div class="field">
             <label for="nome">Nome</label>
             <input type="text" pInputText id="nome" [(ngModel)]="atividade.nome" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !atividade.nome}"/>
             <small class="ng-dirty ng-invalid" *ngIf="submitted && !atividade.nome">Nome é obrigatório.</small>
         </div>
-
         <div class="field">
-            <label for="url">Ícone (URL)</label>
-            <input type="text" pInputText id="url" [(ngModel)]="atividade.url"/>
+            <label for="categoria">Categoria</label>
+            <p-dropdown [options]="categorias" [(ngModel)]="atividade.categoria_id" optionLabel="nome" optionValue="id" placeholder="Selecione uma categoria"></p-dropdown>
+            <small class="ng-dirty ng-invalid" *ngIf="submitted && !atividade.categoria_id">Categoria é obrigatória.</small>
         </div>
+        <div class="field">
+            <label for="icone">Ícone</label>
+            <div class="icon-grid">
+                <div *ngFor="let icon of icons" 
+                     class="icon-item" 
+                     [ngClass]="{'selected': atividade.url === icon}" 
+                     (click)="selectIcon(icon)">
+                    <img [src]="getIconPath(icon)" 
+                         class="icon" 
+                         alt="Ícone da atividade" 
+                         style="width: 32px; height: 32px;"/>
+                </div>
+            </div>
+        </div>
+        
+        
     </ng-template>
 
     <ng-template pTemplate="footer">
