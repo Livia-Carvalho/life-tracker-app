@@ -32,12 +32,16 @@ export class AtividadeUpdateComponent {
     this.categoriaService.getAll().subscribe((categorias: TCategoria[]) => {
       this.categorias = categorias;
     });
-
+  
     this.loadIcons();
-
+  
     if (id) {
       this.atividadeService.get(id).subscribe((_atividade: TAtividade): void => {
         this.atividade = _atividade;
+        // Verifique se a categoria da atividade foi corretamente atribuída
+        if (this.atividade.categoria) {
+          console.log('Categoria carregada:', this.atividade.categoria);
+        }
       });
     } else {
       this.atividade = <TAtividade>{};
@@ -62,7 +66,14 @@ export class AtividadeUpdateComponent {
 
   onSave(): void {
     this.submitted = true;
-
+  
+    console.log('Categoria selecionada:', this.atividade.categoria);
+  
+    if (!this.atividade.categoria || !this.atividade.categoria.id) {
+      this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Selecione uma categoria válida', life: 3000 });
+      return;
+    }
+  
     if (this.atividade.id) {
       this.atividadeService.update(this.atividade as TAtividade).subscribe(() => {
         this.onClose();

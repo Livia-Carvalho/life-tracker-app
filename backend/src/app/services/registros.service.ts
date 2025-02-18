@@ -14,8 +14,11 @@ export class RegistroService {
     }
 
     async get(id: number): Promise<Registro> {
-        return this.repository.findOneBy({ id })
-    }
+        return this.repository.findOne({
+            where: { id },
+            relations: ['nota', 'registroAtividades', 'registroAtividades.atividade']
+        });
+    }    
 
     async create(registro: Registro): Promise<Registro> {
         return this.repository.save(registro)

@@ -49,23 +49,16 @@ export class CriarRegistroComponent implements OnInit {
         this.atividadesPorCategoria = {};
     
         categorias.forEach(categoria => {
-          this.atividadesPorCategoria[categoria.id] = [];
+          this.atividadesPorCategoria[categoria.id] = categoria.atividades;
         });
-    
-        this.atividadeService.getAll().subscribe(atividades => {
-          atividades.forEach(atividade => {
-            if (atividade.categoria_id && this.atividadesPorCategoria[atividade.categoria_id]) {
-              this.atividadesPorCategoria[atividade.categoria_id].push(atividade);
-            }
-          });
-          console.log('Atividades carregadas por categoria:', this.atividadesPorCategoria);
-        });
+
+        console.log('Atividades carregadas por categoria:', this.atividadesPorCategoria);
       });
     }
     
 
       getIconPath(iconName: string | null): string {
-        return iconName ? `${this.iconPath}${iconName}.svg` : `${this.iconPath}default.svg`;
+        return iconName ? `${this.iconPath}${iconName}.svg` : `${this.iconPath}water.svg`;
       }
     
       toggleAtividade(atividadeId: number) {
@@ -104,18 +97,15 @@ export class CriarRegistroComponent implements OnInit {
               throw new Error('ID do registro não foi definido pelo backend.');
             }
       
-            // Agora, criar a associação entre o registro e as atividades
             this.atividadesSelecionadas.forEach((atividadeId) => {
-              // Encontrar a atividade pelo ID
               const atividadeSelecionada = this.encontrarAtividadePorId(atividadeId);
       
               if (atividadeSelecionada) {
                 const registroAtividade: TRegistroAtividade = {
-                  registro: registroSalvo, // Passa o objeto registro completo
-                  atividade: atividadeSelecionada, // Passa o objeto atividade completo
+                  registro: registroSalvo,
+                  atividade: atividadeSelecionada,
                 };
       
-                // Chama o serviço para criar o registroAtividade
                 this.registroAtividadeService.create(registroAtividade).subscribe(
                   () => {
                     console.log('Atividade associada ao registro:', atividadeId);

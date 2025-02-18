@@ -1,24 +1,27 @@
-.icon-flex-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  padding: 10px;
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
 }
-
 .icon-item {
-  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border: 2px solid transparent;
-  border-radius: 10px;
-  padding: 5px;
-  transition: all 0.3s;
-
-  &:hover {
-    border-color: #007BFF;
-    background-color: #e6f7ff;
-  }
-
-  &.selected {
-    border-color: #28a745;
-    background-color: #d4edda;
-  }
+  border-radius: 8px;
+  transition: border-color 0.3s;
+  cursor: pointer;
+}
+.icon-item:hover, .icon-item:focus {
+  border-color: #007ad9;
+}
+.icon-item.selected {
+  border-color: #28a745;
+  box-shadow: 0 0 5px #28a745;
+  background-color: #e6ffe6;
+}
+.icon {
+  width: 40px;
+  height: 40px;
 }

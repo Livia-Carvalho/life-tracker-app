@@ -5,27 +5,45 @@
             <input type="text" pInputText id="nome" [(ngModel)]="atividade.nome" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !atividade.nome}"/>
             <small class="ng-dirty ng-invalid" *ngIf="submitted && !atividade.nome">Nome é obrigatório.</small>
         </div>
+
         <div class="field">
             <label for="categoria">Categoria</label>
-            <p-dropdown [options]="categorias" [(ngModel)]="atividade.categoria_id" optionLabel="nome" optionValue="id" placeholder="Selecione uma categoria"></p-dropdown>
-            <small class="ng-dirty ng-invalid" *ngIf="submitted && !atividade.categoria_id">Categoria é obrigatória.</small>
+            <p-dropdown 
+                [options]="categorias" 
+                [(ngModel)]="atividade.categoria" 
+                optionLabel="nome" 
+                placeholder="Selecione uma categoria"
+                required>
+            </p-dropdown>
+            <small class="ng-dirty ng-invalid" *ngIf="submitted && !atividade.categoria">Categoria é obrigatória.</small>
         </div>
+
+        <div class="field">
+            <label for="natureza">Natureza</label>
+            <p-dropdown [options]="[
+                {label: 'Neutra', value: 0},
+                {label: 'Positiva', value: 1},
+                {label: 'Negativa', value: 2}
+            ]" [(ngModel)]="atividade.natureza" optionLabel="label" optionValue="value" placeholder="Selecione a natureza"></p-dropdown>
+            <small class="ng-dirty ng-invalid" *ngIf="submitted && atividade.natureza === undefined">Natureza é obrigatória.</small>
+        </div>
+
         <div class="field">
             <label for="icone">Ícone</label>
             <div class="icon-grid">
                 <div *ngFor="let icon of icons" 
                      class="icon-item" 
                      [ngClass]="{'selected': atividade.url === icon}" 
-                     (click)="selectIcon(icon)">
+                     (click)="selectIcon(icon)"
+                     tabindex="0"
+                     (keydown.enter)="selectIcon(icon)">
                     <img [src]="getIconPath(icon)" 
                          class="icon" 
                          alt="Ícone da atividade" 
-                         style="width: 32px; height: 32px;"/>
+                         style="width: 40px; height: 40px; cursor: pointer;"/>
                 </div>
             </div>
         </div>
-        
-        
     </ng-template>
 
     <ng-template pTemplate="footer">

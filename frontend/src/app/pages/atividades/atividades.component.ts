@@ -37,19 +37,21 @@ export class AtividadesComponent implements OnInit {
 
   carregarCategoriasEAtividades() {
     this.categoriaService.getAll().subscribe(categorias => {
+      console.log('Categorias carregadas:', categorias);
       this.categorias = categorias;
       this.atividadesPorCategoria = {};
-
+  
       categorias.forEach(categoria => {
         this.atividadesPorCategoria[categoria.id] = [];
       });
-
+  
       this.atividadeService.getAll().subscribe(atividades => {
         atividades.forEach(atividade => {
-          if (atividade.categoria_id && this.atividadesPorCategoria[atividade.categoria_id]) {
-            this.atividadesPorCategoria[atividade.categoria_id].push(atividade);
+          if (atividade.categoria.id && this.atividadesPorCategoria[atividade.categoria.id]) {
+            this.atividadesPorCategoria[atividade.categoria.id].push(atividade);
           }
         });
+        console.log('Atividades carregadas por categoria:', this.atividadesPorCategoria);
       });
     });
   }

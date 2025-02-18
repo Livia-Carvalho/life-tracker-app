@@ -6,7 +6,6 @@ import { TAtividade } from 'src/app/model/atividade.model';
 import { TCategoria } from 'src/app/model/categoria.model';
 import { RegistroService } from 'src/app/service/registro.service';
 import { NotaService } from 'src/app/service/nota.service';
-import { AtividadeService } from 'src/app/service/atividade.service';
 import { CategoriaService } from 'src/app/service/categoria.service';
 import { RegistroAtividadeService } from 'src/app/service/registroAtividade.service';
 
@@ -21,13 +20,12 @@ export class VerRegistroComponent implements OnInit {
   categorias: TCategoria[] = [];
   atividadesPorCategoria: { [key: number]: TAtividade[] } = {};
   atividadesSelecionadas: Set<number> = new Set();
-  iconPath = './shared/icons/';
+  iconPath = './assets/icons/';
 
   constructor(
     private route: ActivatedRoute,
     private registroService: RegistroService,
     private notaService: NotaService,
-    private atividadeService: AtividadeService,
     private categoriaService: CategoriaService,
     private registroAtividadeService: RegistroAtividadeService
   ) {}
@@ -39,38 +37,24 @@ export class VerRegistroComponent implements OnInit {
   }
 
   carregarRegistro(registroId: number) {
-    this.registroService.get(registroId).subscribe(
-      (registro) => {
-        this.registro = registro;
-        console.log('Registro carregado:', this.registro);
-
-        // Carregar nota associada ao registro
-        if (registro.nota) {
-          this.nota = registro.nota;
-          console.log('Nota carregada:', this.nota);
-        } else {
-          console.log('Nota não encontrada para o registro.');
-        }
-
-        // Carregar atividades associadas ao registro
-        if (registro.id) {
-          this.carregarAtividadesSelecionadas(registro.id);
-        }
-      },
-      (error) => {
-        console.error('Erro ao carregar registro:', error);
+    this.registroService.get(registroId).subscribe((registro) => {
+      this.registro = registro;
+      if (registro.nota) {
+        this.nota = registro.nota;
       }
-    );
+      if (registro.id) {
+        this.carregarAtividadesSelecionadas(registro.id);
+      }
+    });
   }
 
   carregarAtividadesSelecionadas(registroId: number) {
     this.registroAtividadeService.getAll().subscribe((registroAtividades) => {
-      // Filtra as atividades associadas ao registro
-      const atividadesDoRegistro = registroAtividades.filter((ra) => ra.registro.id === registroId);
-
-      // Adiciona as atividades ao Set de atividades selecionadas
+      const atividadesDoRegistro = registroAtividades.filter((ra) => ra.registro?.id === registroId);
       atividadesDoRegistro.forEach((ra) => {
-        this.atividadesSelecionadas.add(ra.atividade.id);
+        if (ra.atividade?.id) {
+          this.atividadesSelecionadas.add(ra.atividade.id);
+        }
       });
     });
   }
@@ -79,24 +63,9 @@ export class VerRegistroComponent implements OnInit {
     this.categoriaService.getAll().subscribe((categorias) => {
       this.categorias = categorias;
       this.atividadesPorCategoria = {};
-
       categorias.forEach((categoria) => {
-        this.atividadesPorCategoria[categoria.id] = [];
+        this.atividadesPorCategoria[categoria.id] = categoria.atividades;
       });
-
-      this.atividadeService.getAll().subscribe((atividades) => {
-        atividades.forEach((atividade) => {
-          if (atividade.categoria_id && this.atividadesPorCategoria[atividade.categoria_id]) {
-            this.atividadesPorCategoria[atividade.categoria_id].push(atividade);
-          }
-        });
-      });
-    });
-  }
-
-  salvarNota() {
-    this.notaService.update(this.nota).subscribe(() => {
-      alert('Anotação atualizada com sucesso!');
     });
   }
 
@@ -106,5 +75,53 @@ export class VerRegistroComponent implements OnInit {
 
   isAtividadeSelecionada(atividadeId: number): boolean {
     return this.atividadesSelecionadas.has(atividadeId);
+  }
+
+  toggleAtividade(atividadeId: number) {
+    if (this.atividadesSelecionadas.has(atividadeId)) {
+      this.atividadesSelecionadas.delete(atividadeId);
+    } else {
+      this.atividadesSelecionadas.add(atividadeId);
+    }
+  }
+
+  salvarAlteracoes() {
+    this.notaService.update(this.nota).subscribe(() => {
+      this.registroAtividadeService.getAll().subscribe((regAtividades) => {
+        const relacionados = regAtividades.filter((ra) => ra.registro?.id === this.registro.id);
+
+        // Remover atividades não selecionadas
+        relacionados.forEach((ra) => {
+          if (!this.atividadesSelecionadas.has(ra.atividade.id)) {
+            this.registroAtividadeService.delete(ra.id!).subscribe();
+          }
+        });
+
+        // Adicionar atividades selecionadas que não estão relacionadas
+        this.atividadesSelecionadas.forEach((atividadeId) => {
+          if (!relacionados.some((ra) => ra.atividade.id === atividadeId)) {
+            const atividade = this.encontrarAtividadePorId(atividadeId);
+            if (atividade) {
+              this.registroAtividadeService.create({
+                registro: this.registro,
+                atividade: atividade,
+              }).subscribe();
+            }
+          }
+        });
+
+        alert('Alterações salvas com sucesso!');
+      });
+    });
+  }
+
+  encontrarAtividadePorId(atividadeId: number): TAtividade | undefined {
+    for (const categoriaId in this.atividadesPorCategoria) {
+      const atividade = this.atividadesPorCategoria[categoriaId].find((a) => a.id === atividadeId);
+      if (atividade) {
+        return atividade;
+      }
+    }
+    return undefined;
   }
 }

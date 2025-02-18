@@ -16,7 +16,6 @@ import { AppLayoutComponent } from "./layout/app.layout.component";
                     { path: 'registros', loadChildren: () => import('./pages/registros/registros.module').then(m => m.RegistrosModule) },
                     { path: 'ver-registro/:id', loadChildren: () => import('./pages/ver-registro/ver-registro.module').then(m => m.VerRegistroModule) },
                     { path: 'atividades', loadChildren: () => import('./pages/atividades/atividades.module').then(m => m.AtividadesModule) },
-                    { path: 'calendar', loadChildren: () => import('./pages/calendar/calendar.module').then(m => m.CalendarModule) },
                     { path: 'perfil', loadChildren: () => import('./pages/perfil/perfil.module').then(m => m.PerfilModule) },
                 ]
             },
